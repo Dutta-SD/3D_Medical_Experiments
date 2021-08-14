@@ -1,7 +1,7 @@
 import torch
 import pytorch_lightning as pl
-from conv_blocks import ConvNormDownSampling, ConvNormUpSampling
-from fpn_backbone import FPN_BackBone_3D
+from .conv_blocks import ConvNormDownSampling, ConvNormUpSampling
+from .fpn_backbone import FPN_BackBone_3D
 
 # UNET
 class UNET3DwithAttention(pl.LightningModule):
@@ -30,13 +30,17 @@ class UNET3DwithAttention(pl.LightningModule):
         self._u_2 = ConvNormUpSampling(128, 64)  # 128x24x24x24 - 64x48x48x48
         self._u_1 = ConvNormUpSampling(64, out_channels)  # 64x48x48x48 - 2x96x96x96
 
-    def forward(self, x, noise):
+    def forward(self, x):
         """
         noise - random noise to generate attention maps
         x - input image
 
         noise is same dimensional as x
         """
+        # generate noise
+        noise = torch.rand(x.shape)
+
+
         # attention maps from FPN Backbone
         attn_mp = [torch.sigmoid(t) for t in self._fpn(noise)]
 

@@ -1,4 +1,4 @@
-from conv_blocks import ConvNormDownSampling, ResidualAddAndUpsample
+from .conv_blocks import ConvNormDownSampling, ResidualAddAndUpsample
 import pytorch_lightning as pl
 
 
