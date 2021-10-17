@@ -38,7 +38,7 @@ class UNET3DwithAttention(pl.LightningModule):
         noise is same dimensional as x
         """
         # generate noise
-        noise = torch.rand(x.shape)
+        noise = torch.rand(x.shape, device=self.device)
 
 
         # attention maps from FPN Backbone
