@@ -123,3 +123,19 @@ def transform1(img):
     res = threshold_binary(res, inverse=True)
 
     return res
+
+
+def view(img, x):
+    cv2.imshow("Original", img)
+    cv2.imshow("Shadow Mask", x)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+def log_stretch(img : np.ndarray, c = 1.0):
+    x : np.ndarray = img.copy().astype(np.float)
+    # Normalise to [0, 1]
+    vec_log = np.vectorize(np.math.log)
+    x += 1
+    x = c * vec_log(x)
+    return x.astype(np.uint8)

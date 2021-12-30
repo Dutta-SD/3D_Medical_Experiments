@@ -19,14 +19,6 @@ def transform3(img):
     return B
 
 
-def view(img, x):
-    cv2.imshow("Original", img)
-    cv2.imshow("Shadow Mask", x)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 # GrayScale
 if __name__ == "__main__":
     shadow_img_path = config.BASE_DIR / "ISTD/Img_shadow"
