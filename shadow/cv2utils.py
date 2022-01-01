@@ -16,7 +16,6 @@ def kmeans_segment(image, K, attempts):
         criteria,
         attempts,
         cv2.KMEANS_PP_CENTERS,
-        # cv2.KMEANS_RANDOM_CENTERS,
     )
     center = np.uint8(center)
     res = center[label.flatten()]
@@ -132,10 +131,24 @@ def view(img, x):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def log_stretch(img : np.ndarray, c = 1.0):
-    x : np.ndarray = img.copy().astype(np.float)
+
+def log_stretch(img: np.ndarray, c=1.0):
+    x: np.ndarray = img.copy().astype(np.float)
     # Normalise to [0, 1]
     vec_log = np.vectorize(np.math.log)
     x += 1
     x = c * vec_log(x)
     return x.astype(np.uint8)
+
+def transform2(img, gamma):
+    res = img.copy()
+    B, G, R = cv2.split(res)
+    R = gamma_corr(R, gamma=gamma)
+    res = cv2.merge([B, G, R])
+    return res
+
+
+def transform3(img):
+    res = bgr_to_hls(img.copy())
+    B, G, R = cv2.split(res)
+    return B
