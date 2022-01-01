@@ -140,6 +140,7 @@ def log_stretch(img: np.ndarray, c=1.0):
     x = c * vec_log(x)
     return x.astype(np.uint8)
 
+
 def transform2(img, gamma):
     res = img.copy()
     B, G, R = cv2.split(res)
