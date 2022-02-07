@@ -1,0 +1,10 @@
+#! /bin/bash
+# To sync with isi remote dir
+# Remote dir: cvpr_isi:/Data3/Sandip/MedSeg
+# Local dir: <CURRENT DIR>
+
+# Change to this dir
+cd "$(dirname '$0')"
+echo "WORKING AT $(pwd)"
+
+rsync -avz -e 'ssh' . cvpr_isi:/Data3/Sandip/MedSeg/
