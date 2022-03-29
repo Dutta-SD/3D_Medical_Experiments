@@ -62,8 +62,5 @@ def generate_random_mask(
     modified_alpha_channel = np.expand_dims(modified_alpha_channel, axis=-1)
     final_img = np.dstack((base_img, modified_alpha_channel))
 
-    if save:
-        cv2.imwrite(full_path, final_img)
-
-    else:
-        return final_img
+   
+    return final_img
