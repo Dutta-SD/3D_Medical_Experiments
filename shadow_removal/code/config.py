@@ -13,3 +13,4 @@ DATA_DIR = BASE_DIR / "input"
 DEVICE = torch.device("cuda:0")
 N_EPOCHS = 100
 BATCH_SIZE = 8
+N_WORKERS = os.cpu_count()
