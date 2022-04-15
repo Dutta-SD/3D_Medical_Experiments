@@ -55,6 +55,28 @@ class TestComponents(unittest.TestCase):
             f"Output {op_shape} != Expected {self.rand_batch_img_tensor.shape}",
         )
 
+    def test_PseudoShapeDimensionsAndSimulationWorking(self):
+        from components.ShadowGenrator.ShapeGenerator import PseudoShadowGenerator
+        import numpy as np
+
+        mdl = PseudoShadowGenerator()
+        sim = mdl.simulate_shape(100, 2000)
+        exp_shape = np.array([480, 640])
+        # Shape
+        self.assertTrue(
+            np.array_equal(sim.shape, exp_shape),
+            f"Model Output Shape: {sim.shape} != Expected Shape: {exp_shape}",
+        )
+        # Non Null
+        self.assertTrue(sim.any(), f"Simulated Matrix is empty")
+        # Equal or 
+        self.assertTrue(np.array_equal(mdl.simulated_matrix, sim), f"Not Same")
+        self.assertEqual(sim.dtype, np.float32, f"Sim Dtype {sim.dtype} != {np.float32}")
+
+    def test_shadowMaskConverter(self):
+        from components.utils.shadowMaskFunctions import convert_shadow_mask_single2MultiChannel
+        convert_shadow_mask_single2MultiChannel()
+
 
 if __name__ == "__main__":
     unittest.main()
