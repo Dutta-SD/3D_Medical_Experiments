@@ -69,13 +69,26 @@ class TestComponents(unittest.TestCase):
         )
         # Non Null
         self.assertTrue(sim.any(), f"Simulated Matrix is empty")
-        # Equal or 
+        # Equal or
         self.assertTrue(np.array_equal(mdl.simulated_matrix, sim), f"Not Same")
-        self.assertEqual(sim.dtype, np.float32, f"Sim Dtype {sim.dtype} != {np.float32}")
+        self.assertEqual(
+            sim.dtype, np.float32, f"Sim Dtype {sim.dtype} != {np.float32}"
+        )
 
     def test_shadowMaskConverter(self):
-        from components.utils.shadowMaskFunctions import convert_shadow_mask_single2MultiChannel
-        convert_shadow_mask_single2MultiChannel()
+        from components.utils.shadowMaskFunctions import (
+            convert_shadow_mask_single2MultiChannel,
+        )
+
+        op_image = convert_shadow_mask_single2MultiChannel(
+            self.rand_img_tensor_1[:, 1, :, :], kernel_size=3
+        )
+
+        self.assertEqual(
+            op_image.shape,
+            torch.Size([1, 4, 480, 640]),
+            f"{op_image.shape} != Expected {torch.Size([1, 4, 480, 640])}",
+        )
 
 
 if __name__ == "__main__":
