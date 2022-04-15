@@ -1,0 +1,2 @@
+# -N disables executing a remote shell
+ssh -N -L 8080:127.0.0.1:8080 cvpr_isi
