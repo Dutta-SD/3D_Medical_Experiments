@@ -14,3 +14,4 @@ DEVICE = torch.device("cuda:0")
 N_EPOCHS = 100
 BATCH_SIZE = 4
 N_WORKERS = os.cpu_count()
+N_TIMES_PER_BATCH = 2
