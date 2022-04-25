@@ -6,7 +6,7 @@ class ActorUNet(nn.Module):
     def __init__(self, n_input_channels=3, n_output_channels=3):
         super(ActorUNet, self).__init__()
 
-        self.dconv_down1 = self._double_conv(3, 64)
+        self.dconv_down1 = self._double_conv(n_input_channels, 64)
         self.dconv_down2 = self._double_conv(64, 128)
         self.dconv_down3 = self._double_conv(128, 256)
         self.dconv_down4 = self._double_conv(256, 512)

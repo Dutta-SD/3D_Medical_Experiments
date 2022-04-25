@@ -9,7 +9,10 @@ class Critic(torch.nn.Module):
         # TODO -- Hardcoded 140, Modify
         self._layer = torch.nn.Sequential(
             torch.nn.Conv2d(
-                2 * single_image_in_channel, 16, kernel_size=5, padding="same"
+                2 * single_image_in_channel + kwargs.get("extra_channel", 0),
+                16,
+                kernel_size=5,
+                padding="same",
             ),
             torch.nn.MaxPool2d(4),
             torch.nn.ReLU(),
@@ -20,6 +23,7 @@ class Critic(torch.nn.Module):
             torch.nn.MaxPool2d(4),
             torch.nn.Flatten(),
             torch.nn.Linear(140, 1, bias=False),
+            torch.nn.Sigmoid(),
         )
 
     def forward(self, image_with_generated_shadow, image_shadow_free):

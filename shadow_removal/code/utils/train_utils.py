@@ -20,10 +20,8 @@ def save_batch_as_image(img_batch: torch.TensorType, path_to_save: str) -> None:
     """
     Saves a batch as a grid of images in .png format
     """
+    print(img_batch.shape)
 
     grid_img = tv.utils.make_grid(img_batch, normalize=True)
     plt.imsave(path_to_save, grid_img.permute(1, 2, 0))
 
-
-def train_one_batch():
-    pass

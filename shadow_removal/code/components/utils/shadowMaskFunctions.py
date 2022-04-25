@@ -13,7 +13,6 @@ def np2GPUTensor(np_array: np.array) -> torch.Tensor:
     return torch.from_numpy(cpu_array).to(config.DEVICE)
 
 
-@torch.jit.script
 def convert_shadow_mask_single2MultiChannel(
     shadow_mask: torch.Tensor,
     img_height: int = 480,
@@ -23,6 +22,7 @@ def convert_shadow_mask_single2MultiChannel(
 ) -> torch.Tensor:
     """
     shadow_mask : Expected [1, H, W] shaped Tensor
+    Final Shape: [1 4 H W]
     """
     with torch.no_grad():
         base_tensor = torch.zeros(
@@ -39,13 +39,11 @@ def convert_shadow_mask_single2MultiChannel(
         return torch.cat((base_tensor, final_mask), dim=0).unsqueeze(0)
 
 
-@torch.jit.script
 def repeat_for_batch(img_tensor, batch_size: int = config.BATCH_SIZE):
     """NOTE: img tensor should have fake batch diimension of 1"""
     return torch.repeat_interleave(img_tensor, batch_size, 0)
 
 
-@torch.jit.script
 def apply_shadow_mask_2_batch(
     shadow_mask: torch.Tensor,
     batch_shadow_image: torch.Tensor,
@@ -85,3 +83,21 @@ def apply_shadow_mask_2_batch(
         )
 
         return batch_final_img_batch
+
+
+def modify_generated_shape(
+    gen_shape: np.array,
+    kernel_size: int,
+    img_batch: torch.Tensor,
+    alpha: float,
+) -> torch.Tensor:
+    """
+    Modifies the generated shape
+    Shape expected of (H x W)
+    """
+    gpu_shape = np2GPUTensor(gen_shape)
+    gpu_shape = convert_shadow_mask_single2MultiChannel(
+        gpu_shape, kernel_size=kernel_size
+    )
+    final_tensor = apply_shadow_mask_2_batch(gpu_shape, img_batch, alpha=alpha)
+    return final_tensor

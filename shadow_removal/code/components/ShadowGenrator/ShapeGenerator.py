@@ -22,6 +22,7 @@ class PseudoShadowGenerator:
         self.max_a = 255
 
     def simulate_shape(self, padding, num_iters) -> np.array:
+        """Simulates the Random Shape"""
 
         drunk = {
             "wallCountdown": num_iters,

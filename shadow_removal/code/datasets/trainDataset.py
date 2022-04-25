@@ -38,7 +38,8 @@ class TrainDataISTD(Dataset):
             )
 
     def __len__(self):
-        return len(self._shadow_images)
+        # return len(self._shadow_images)
+        return 64
 
     def __getitem__(self, idx):
         img_dict = {}
