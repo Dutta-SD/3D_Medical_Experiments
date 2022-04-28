@@ -22,4 +22,11 @@ NUM_WORKERS = 2
 LR = 1e-4
 
 # Monai Directory
-os.environ['MONAI_DATA_DIRECTORY'] = str(DATA_DIR)
+os.environ["MONAI_DATA_DIRECTORY"] = str(DATA_DIR)
+
+# Model Utilities
+EMB_SIZE = 720
+PATCH_SIZE = 32
+IMG_SIZE = 240
+PROJ_OP_CHANNEL = 3
+N_SLICES = 155

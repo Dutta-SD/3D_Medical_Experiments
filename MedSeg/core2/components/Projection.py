@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from torch import rand
 from einops.layers.torch import Rearrange, Reduce
+from .componentLogger import get_logger
+_LOG = get_logger()
 
 
 class Projection(nn.Module):
@@ -26,8 +28,10 @@ class Projection(nn.Module):
             nn.Conv2d(self.n_slices, self.n_output_channels, 1),
         )
 
-    def forward(self, x):
+    def forward(self, x : torch.Tensor):
+        _LOG.debug(f"Component [{type(self).__name__}] Input Shape {x.shape}")
         x = self.pipe(x)
+        _LOG.debug(f"Component [{type(self).__name__}] Output Shape {x.shape}")
         return x
 
 

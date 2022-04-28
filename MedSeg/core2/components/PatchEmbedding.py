@@ -8,6 +8,9 @@ import torch.nn.functional as F
 from einops import rearrange, reduce, repeat
 from einops.layers.torch import Rearrange, Reduce
 from torch import Tensor
+from .componentLogger import get_logger
+
+_LOG = get_logger()
 
 """
 Source Code Has Been adapted from -- https://github.com/FrancescoSaverioZuppichini/glasses
@@ -21,11 +24,13 @@ class ViTTokens(nn.Module):
         self.cls = nn.Parameter(torch.randn(1, 1, emb_size))
 
     def forward(self, x: Tensor) -> List[Tensor]:
+        _LOG.debug(f"Component [{type(self).__name__}] Input Shape {x.shape}")
         b = x.shape[0]
         tokens = []
         for token in self.parameters():
             # for each token repeat itself over the batch dimension
             tokens.append(repeat(token, "() n e -> b n e", b=b))
+        _LOG.debug(f"Component [{type(self).__name__}] Output Shape {len(tokens)}")
         return tokens
 
     def __len__(self):
@@ -55,6 +60,7 @@ class PatchEmbedding(nn.Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
+        _LOG.debug(f"Component [{type(self).__name__}] Input Shape {x.shape}")
         x = self.projection(x)
         # get the tokens
         tokens = self.tokens(x)
@@ -62,9 +68,5 @@ class PatchEmbedding(nn.Module):
         x = torch.cat([*tokens, x], dim=1)
         # add position embedding
         x += self.positions
+        _LOG.debug(f"Component [{type(self).__name__}] Output Shape {x.shape}")
         return x
-
-
-# Test
-x = torch.randn(1, 1, 240, 240)
-print(PatchEmbedding(in_channels=1, img_size=240)(x).shape)

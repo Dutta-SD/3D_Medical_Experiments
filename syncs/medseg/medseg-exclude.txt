@@ -1,4 +1,3 @@
 models/*
 input/*
-logs/*
 outputs/*

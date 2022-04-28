@@ -1,0 +1,30 @@
+version: 1
+
+formatters:
+  simple:
+    format: "%(asctime)s [%(levelname)s]: %(message)s"
+
+handlers:
+  componentHandler:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: simple
+    filename: logs/componentLogs.log
+    encoding: utf8
+    mode: w
+
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+loggers:
+  componentLogger:
+    level: DEBUG
+    handlers: [componentHandler]
+    propagate: no
+
+root:
+  level: DEBUG
+  handlers: [console]

@@ -3,6 +3,9 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from einops import rearrange
+from .componentLogger import get_logger
+
+_LOG = get_logger()
 
 
 class QKV(nn.Module):
@@ -21,6 +24,7 @@ class QKV(nn.Module):
 
     def forward(self, x: Tensor, mask: Tensor = None) -> Tensor:
         # split keys, queries and values in num_heads
+        _LOG.debug(f"Component [{type(self).__name__}] Input Shape to forward function is {x.shape}")
         qkv = rearrange(
             self.qkv(x),
             "b n (qkv h d) -> (qkv) b h n d",
@@ -29,10 +33,6 @@ class QKV(nn.Module):
         )
 
         queries, keys, values = qkv
+        _LOG.debug(f"Component [{type(self).__name__}] Shape of output query is: {queries.shape}")
 
         return queries, keys, values
-
-# Test
-shape = (1, 226, 768)
-x = torch.randn(*shape)
-print(QKV()(x)[1].shape)
