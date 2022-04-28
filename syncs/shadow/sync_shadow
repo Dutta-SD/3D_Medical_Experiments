@@ -1,1 +1,0 @@
-rsync -chavzP --stats --exclude-from="shadow-exclude.txt" cvpr_isi:/Data3/Sandip/shadow_removal ../..
