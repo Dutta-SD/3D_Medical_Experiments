@@ -90,7 +90,6 @@ _val_ds = DecathlonDataset(
     # download=True,
     cache_rate=0.0,
     num_workers=4,
-
 )
 val_loader = torch.utils.data.DataLoader(
     _val_ds, batch_size=1, shuffle=False, num_workers=4

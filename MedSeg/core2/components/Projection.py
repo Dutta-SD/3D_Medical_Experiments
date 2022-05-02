@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch import rand
 from einops.layers.torch import Rearrange, Reduce
 from .componentLogger import get_logger
+
 _LOG = get_logger()
 
 
@@ -24,21 +25,14 @@ class Projection(nn.Module):
             # Make it a 4D input, Treat depth as channel
             # Rearrange to make n_s first
             Rearrange("bs n_c h w n_s -> bs (n_s n_c) h w"),
+            Reduce("bs nc h w -> bs 1 h w", reduction="mean"),
+            Reduce("bs nc h w -> bs (m nc) h w", m=3, reduction="copy"),
             # 1x1 convolution to reduce number of channels, variable channel weights
-            nn.Conv2d(self.n_slices, self.n_output_channels, 1),
+            # nn.Conv2d(self.n_slices, self.n_output_channels, 1),
         )
 
-    def forward(self, x : torch.Tensor):
-        _LOG.debug(f"Component [{type(self).__name__}] Input Shape {x.shape}")
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        _LOG.debug(f"Component [{__name__}] Input Shape {x.shape}")
         x = self.pipe(x)
-        _LOG.debug(f"Component [{type(self).__name__}] Output Shape {x.shape}")
+        _LOG.debug(f"Component [{__name__}] Output Shape {x.shape}")
         return x
-
-
-# # Test
-# # Sigle Image -- (bs, n_c, h, w, n_s); n_c -- 1, bs -- 1
-# x = rand(1, 1, 240, 240, 155)
-# model = Projection(n_output_channels=3, n_slices=155)
-# with torch.no_grad():
-#     op = model(x)
-#     print(op.shape)

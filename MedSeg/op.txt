@@ -1,0 +1,3 @@
+image label image_meta_dict label_meta_dict image_transforms label_transforms
+image label image_meta_dict label_meta_dict image_transforms label_transforms
+torch.Size([1, 4, 224, 224, 144])
