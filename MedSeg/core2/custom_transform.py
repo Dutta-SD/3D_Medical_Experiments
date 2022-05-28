@@ -22,8 +22,8 @@ class ConvertToMultiChannelBasedOnBratsClassesd(MapTransform):
             result.append(np.logical_or(d[key] == 2, d[key] == 3))
             # merge labels 1, 2 and 3 to construct WT
             result.append(
-                np.logical_or(np.logical_or(d[key] == 2, d[key] == 3), d[key] == 1)
-            )
+                np.logical_or(np.logical_or(d[key] == 2, d[key] == 3),
+                              d[key] == 1))
             # label 2 is ET
             result.append(d[key] == 2)
             d[key] = np.stack(result, axis=0).astype(np.float32)

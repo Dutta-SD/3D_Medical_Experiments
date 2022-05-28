@@ -55,6 +55,7 @@ einops = "*"
 [dev-packages]
 pylint = "*"
 pigar = "*"
+yapf = "*"
 
 [requires]
 python_version = "3.7"

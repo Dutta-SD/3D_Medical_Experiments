@@ -8,24 +8,44 @@ from components import MedSegModel
 from dataset import train_loader
 from components.componentLogger import get_logger
 
+# ******************************************************
 LOG = get_logger()
 
 # Model
-model: Module = MedSegModel().to(config.DEVICE)
+model = MedSegModel().to(config.DEVICE)
 
 # Optimizer
-optimizer: optim.Optimizer = optim.Adam(model.parameters())
+optimizer = optim.Adam(model.parameters())
 
 # loss criterion
-criterion = DiceLoss(
-    to_onehot_y=True,
-).to(config.DEVICE)
+criterion = DiceLoss(smooth_nr=0,
+                     smooth_dr=1e-5,
+                     squared_pred=True,
+                     to_onehot_y=False,
+                     sigmoid=True).to(config.DEVICE)
 
 # Loss List
 loss_list = []
+# *******************************************************
 
 
-def train_one_epoch(model: Module, optimizer, dloader):
+def get_image_and_labels_from_batch(batch: dict):
+    # Data -- Oth and 1st modality
+    x1 = batch["image"][:, 0, :, :, :].to(config.DEVICE).unsqueeze(1)
+    x2 = batch["image"][:, 1, :, :, :].to(config.DEVICE).unsqueeze(1)
+
+    # Log
+    LOG.info(f"Shape of Inputs: {x1.shape} & {x2.shape}")
+
+    # Labels -- 0th prediction
+    y_true = batch["label"][:, 0, :, :, :].to(config.DEVICE).unsqueeze(1)
+
+    # Log
+    LOG.info(f"Shape of Output is: {y_true.shape}")
+    return x1, x2, y_true
+
+
+def train_one_epoch(model, optimizer, dloader):
     """
     Trains Model for One epoch
 
@@ -36,15 +56,13 @@ def train_one_epoch(model: Module, optimizer, dloader):
     """
     model.train()
     for idx, batch in enumerate(dloader):
-        # Just use 2 modalities
-        x1, x2 = batch["image"][0][0], batch["image"][0][1]
-        # Adds 2 fake dimensions
-        x1, x2 = x1.unsqueeze(0).unsqueeze(0), x2.unsqueeze(0).unsqueeze(0)
-        LOG.debug(f"Shape of Inputs: {x1.shape} & {x2.shape}")
-        # Just work on a single Label
-        y_true = batch["label"][0][0]
         optimizer.zero_grad()
+
+        x1, x2, y_true = get_image_and_labels_from_batch(batch)
         y_pred = model(x1, x2)
+
+        LOG.info(f"Shape of predicted output from model is {y_pred.shape}")
+
         loss = criterion(y_pred, y_true)
 
         # Train
@@ -57,7 +75,9 @@ def train_one_epoch(model: Module, optimizer, dloader):
 if __name__ == "__main__":
     for epoch in range(config.NUM_TRAIN_EPOCHS):
         print(f"EPOCH: {epoch}")
-        loss_list += [train_one_epoch(model, optimizer, train_loader).detach().item()]
+        loss_list += [
+            train_one_epoch(model, optimizer, train_loader).detach().item()
+        ]
         print(f"Current Train Loss: {loss_list[-1]}")
 
-    plt.plot(loss_list)
+    # plt.plot(loss_list)

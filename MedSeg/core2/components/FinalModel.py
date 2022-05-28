@@ -8,8 +8,10 @@ from .Projection import Projection
 from .QKV import QKV
 import config
 
+
 # Model definition
 class MedSegModel(nn.Module):
+
     def __init__(
         self,
         emb_dim=config.EMB_SIZE,
@@ -21,7 +23,8 @@ class MedSegModel(nn.Module):
 
         # Common Reduction Stage
         self.reduction = nn.Sequential(
-            Projection(n_output_channels=n_proj_output_channels, n_slices=155),
+            Projection(n_output_channels=n_proj_output_channels,
+                       n_slices=config.N_SLICES),
             PatchEmbedding(
                 in_channels=n_proj_output_channels,
                 patch_size=patch_size,
@@ -39,7 +42,7 @@ class MedSegModel(nn.Module):
         # Single Fusion Module
         self.fusion_output = Fusion()
 
-    def forward(self, x1: torch.Tensor, x2: torch.Tensor)->torch.Tensor:
+    def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
         out1 = self.reduction(x1)
         out2 = self.reduction(x2)
         q1, k1, v1 = self.qkv1(out1)
@@ -47,3 +50,4 @@ class MedSegModel(nn.Module):
         o1 = self.attn1(q1, k2, v1)
         o2 = self.attn2(q2, k1, v2)
         out = self.fusion_output(o1, o2)
+        return out

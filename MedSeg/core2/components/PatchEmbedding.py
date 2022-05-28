@@ -11,7 +11,6 @@ from torch import Tensor
 from .componentLogger import get_logger
 
 _LOG = get_logger()
-
 """
 Source Code Has Been adapted from -- https://github.com/FrancescoSaverioZuppichini/glasses
 LICENSE -- MIT
@@ -19,6 +18,7 @@ LICENSE -- MIT
 
 
 class ViTTokens(nn.Module):
+
     def __init__(self, emb_size: int):
         super().__init__()
         self.cls = nn.Parameter(torch.randn(1, 1, emb_size))
@@ -30,7 +30,8 @@ class ViTTokens(nn.Module):
         for token in self.parameters():
             # for each token repeat itself over the batch dimension
             tokens.append(repeat(token, "() n e -> b n e", b=b))
-        _LOG.debug(f"Component [{type(self).__name__}] Output Shape {len(tokens)}")
+        _LOG.debug(
+            f"Component [{type(self).__name__}] Output Shape {len(tokens)}")
         return tokens
 
     def __len__(self):
@@ -38,6 +39,7 @@ class ViTTokens(nn.Module):
 
 
 class PatchEmbedding(nn.Module):
+
     def __init__(
         self,
         in_channels: int = 3,
@@ -51,13 +53,16 @@ class PatchEmbedding(nn.Module):
         super().__init__()
         self.projection = nn.Sequential(
             # using a conv layer instead of a linear one -> performance gains
-            nn.Conv2d(in_channels, emb_size, kernel_size=patch_size, stride=patch_size),
+            nn.Conv2d(in_channels,
+                      emb_size,
+                      kernel_size=patch_size,
+                      stride=patch_size),
             Rearrange("b e (h) (w) -> b (h w) e"),
         )
         self.tokens = tokens(emb_size)
         self.positions = nn.Parameter(
-            torch.randn((img_size // patch_size) ** 2 + len(self.tokens), emb_size)
-        )
+            torch.randn((img_size // patch_size)**2 + len(self.tokens),
+                        emb_size))
 
     def forward(self, x: Tensor) -> Tensor:
         _LOG.debug(f"Component [{type(self).__name__}] Input Shape {x.shape}")

@@ -30,6 +30,5 @@ print(f"Time Needed is {stop - start} s")
 
 from dataset import train_loader
 
-
 print(*(next(iter(train_loader))).keys())
 print((next(iter(train_loader)))["image"].shape)

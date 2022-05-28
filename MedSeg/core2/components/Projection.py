@@ -25,10 +25,10 @@ class Projection(nn.Module):
             # Make it a 4D input, Treat depth as channel
             # Rearrange to make n_s first
             Rearrange("bs n_c h w n_s -> bs (n_s n_c) h w"),
-            Reduce("bs nc h w -> bs 1 h w", reduction="mean"),
-            Reduce("bs nc h w -> bs (m nc) h w", m=3, reduction="copy"),
+            # Reduce("bs nc h w -> bs 1 h w", reduction="mean"),
+            # Reduce("bs nc h w -> bs (m nc) h w", m=3, reduction="copy"),
             # 1x1 convolution to reduce number of channels, variable channel weights
-            # nn.Conv2d(self.n_slices, self.n_output_channels, 1),
+            nn.Conv2d(self.n_slices, self.n_output_channels, 1),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
