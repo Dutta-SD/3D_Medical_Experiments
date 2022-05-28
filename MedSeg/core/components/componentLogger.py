@@ -4,7 +4,7 @@ import yaml
 
 # Used from: https://theaisummer.com/logging-debugging/
 # Open a Yaml config file
-with open("core2/components/log_config.yaml", "r") as f:
+with open("core/components/log_config.yaml", "r") as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
     logging.captureWarnings(True)
@@ -18,5 +18,5 @@ def get_logger(name: str = "componentLogger"):
         name(str): name of logger
     """
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.CRITICAL)
     return logger

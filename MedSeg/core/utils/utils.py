@@ -31,17 +31,16 @@ def viz_one_image(
     # images
     for i in range(4):
 
-        axs[0, i].imshow(img_batch["image"][0][i, :, :,
-                                               slice_num].detach().cpu(),
-                         cmap="gray")
+        axs[0, i].imshow(
+            img_batch["image"][0][i, :, :, slice_num].detach().cpu(), cmap="gray"
+        )
         axs[0, i].axes.get_xaxis().set_visible(False)
         axs[0, i].axes.get_yaxis().set_visible(False)
         axs[0, i].set_title(f"Image Channel {i+1}", fontdict={"fontsize": 10})
 
     # Labels
     for i in range(3):
-        axs[1, i].imshow(img_batch["label"][0][i, :, :,
-                                               slice_num].detach().cpu())
+        axs[1, i].imshow(img_batch["label"][0][i, :, :, slice_num].detach().cpu())
         axs[1, i].axes.get_xaxis().set_visible(False)
         axs[1, i].axes.get_yaxis().set_visible(False)
         axs[1, i].set_title(f"Label Channel {i+1}", fontdict={"fontsize": 10})

@@ -1,1 +1,1 @@
-rsync -chavzP --stats --exclude-from="medseg-exclude.txt" cvpr_isi:/Data3/Sandip/MedSeg ../..
+rsync -chavzP --stats --exclude-from="medseg-exclude.txt" cvpr_isi:/Data3/Sandip/MedSeg ../.. --delete
